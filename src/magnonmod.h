@@ -11,6 +11,8 @@
 #include "tools/monteconvo/sqwbase.h"
 #include "tlibs/math/linalg.h"
 
+#include "tlibs2/libs/magdyn.h"
+
 
 class MagnonMod : public SqwBase
 {
@@ -21,6 +23,8 @@ class MagnonMod : public SqwBase
 
 
 	protected:
+		tl2_mag::MagDyn m_dyn{};
+
 		// peak width
 		t_real m_sigma = t_real(0.05);
 
@@ -30,9 +34,6 @@ class MagnonMod : public SqwBase
 		// incoherent amplitude and width
 		t_real m_incoh_amp = t_real(0.);
 		t_real m_incoh_sigma = t_real(0.05);
-
-		// temperature
-		t_real m_T = t_real(300.);
 
 
 	public:
