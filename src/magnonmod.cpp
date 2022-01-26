@@ -23,12 +23,19 @@ using t_real = typename MagnonMod::t_real;
 
 MagnonMod::MagnonMod()
 {
-	SqwBase::m_bOk = true;
+	SqwBase::m_bOk = false;
 }
 
 
 MagnonMod::MagnonMod(const std::string& cfg_file) : MagnonMod()
 {
+	if(cfg_file == "")
+	{
+		tl::log_info("No config file given for magnon module.");
+		SqwBase::m_bOk = false;
+		return;
+	}
+
 	tl::log_info("Magnon module config file: \"", cfg_file, "\".");
 
 	// load config file
@@ -51,6 +58,15 @@ MagnonMod::~MagnonMod()
 std::tuple<std::vector<t_real>, std::vector<t_real>>
 	MagnonMod::disp(t_real h, t_real k, t_real l) const
 {
+	// calculate the reduced momentum transfer q = Q - G
+	const auto& G = m_dyn.GetBraggPeak();
+	if(G.size() == 3)
+	{
+		h -= G[0].real();
+		k -= G[1].real();
+		l -= G[2].real();
+	}
+
 	// calculate dispersion relation
 	std::vector<t_real> energies;
 	std::vector<t_real> weights;
@@ -258,14 +274,12 @@ SqwBase* MagnonMod::shallow_copy() const
 
 std::tuple<std::string, std::string, std::string> sqw_info()
 {
-	tl::log_info("In ", __func__, ".");
 	return std::make_tuple(TAKIN_VER, "magnonmod", "Magnon Dynamics");
 }
 
 
 std::shared_ptr<SqwBase> sqw_construct(const std::string& cfg_file)
 {
-	tl::log_info("In ", __func__, ".");
 	return std::make_shared<MagnonMod>(cfg_file);
 }
 
