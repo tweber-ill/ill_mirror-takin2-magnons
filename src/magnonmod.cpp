@@ -136,10 +136,7 @@ std::vector<MagnonMod::t_var> MagnonMod::GetVars() const
 	if(field.dir.size() == 3)
 	{
 		B = std::vector<t_real>{{
-			field.dir[0].real(),
-			field.dir[1].real(),
-			field.dir[2].real()
-		}};
+			field.dir[0], field.dir[1], field.dir[2] }};
 	}
 	else
 	{
@@ -211,8 +208,8 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 			if(dir.size() == 3)
 			{
 				tl2_mag::ExternalField field = m_dyn.GetExternalField();
-				field.dir = tl2::create<tl2_mag::t_vec>({
-					dir[0], dir[1], dir[2]});
+				field.dir = tl2::create<tl2_mag::t_vec_real>(
+					{dir[0], dir[1], dir[2]});
 				m_dyn.SetExternalField(field);
 				m_dyn.CalcSpinRotation();
 			}
