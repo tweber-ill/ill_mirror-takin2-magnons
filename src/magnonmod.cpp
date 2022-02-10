@@ -16,6 +16,7 @@
 
 
 using t_real = typename MagnonMod::t_real;
+using t_cplx = tl2_mag::t_cplx;
 
 
 // ----------------------------------------------------------------------------
@@ -164,6 +165,14 @@ std::vector<MagnonMod::t_var> MagnonMod::GetVars() const
 	vars.push_back(SqwBase::t_var{
 		"B_align_spins", "real", tl::var_to_str((int)field.align_spins)});
 
+	// get variables from the model
+	for(const auto& modelvar : m_dyn.GetVariables())
+	{
+		vars.push_back(SqwBase::t_var{
+			modelvar.name, "complex",
+			tl::var_to_str(modelvar.value)});
+	}
+
 	return vars;
 }
 
@@ -195,7 +204,7 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 			if(G.size() == 3)
 			{
 				m_dyn.SetBraggPeak(G[0], G[1], G[2]);
-				m_dyn.CalcSpinRotation();
+				m_dyn.CalcAtomSites();
 			}
 			else
 			{
@@ -211,7 +220,7 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 				field.dir = tl2::create<tl2_mag::t_vec_real>(
 					{dir[0], dir[1], dir[2]});
 				m_dyn.SetExternalField(field);
-				m_dyn.CalcSpinRotation();
+				m_dyn.CalcAtomSites();
 			}
 			else
 			{
@@ -223,14 +232,23 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 			tl2_mag::ExternalField field = m_dyn.GetExternalField();
 			field.mag = tl::str_to_var<decltype(m_S0)>(strVal);
 			m_dyn.SetExternalField(field);
-			m_dyn.CalcSpinRotation();
+			m_dyn.CalcAtomSites();
 		}
 		else if(strVar == "B_align_spins")
 		{
 			tl2_mag::ExternalField field = m_dyn.GetExternalField();
 			field.align_spins = (tl::str_to_var<int>(strVal) != 0);
 			m_dyn.SetExternalField(field);
-			m_dyn.CalcSpinRotation();
+			m_dyn.CalcAtomSites();
+		}
+		else
+		{
+			// set model variables
+			tl2_mag::Variable modelvar;
+			modelvar.name = strVar;
+			modelvar.value = tl::str_to_var<t_cplx>(strVal);
+			m_dyn.SetVariable(std::move(modelvar));
+			m_dyn.CalcExchangeTerms();
 		}
 	}
 }
