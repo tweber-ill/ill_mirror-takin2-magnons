@@ -14,9 +14,13 @@
 #include "tlibs/math/math.h"
 #include "tlibs/phys/neutrons.h"
 
+//#define MAGNONMOD_USE_CPLX
 
 using t_real = typename MagnonMod::t_real;
-using t_cplx = tl2_mag::t_cplx;
+
+#ifdef MAGNONMOD_USE_CPLX
+	using t_cplx = tl2_mag::t_cplx;
+#endif
 
 
 // ----------------------------------------------------------------------------
@@ -168,9 +172,15 @@ std::vector<MagnonMod::t_var> MagnonMod::GetVars() const
 	// get variables from the model
 	for(const auto& modelvar : m_dyn.GetVariables())
 	{
+#ifdef MAGNONMOD_USE_CPLX
 		vars.push_back(SqwBase::t_var{
 			modelvar.name, "complex",
 			tl::var_to_str(modelvar.value)});
+#else
+		vars.push_back(SqwBase::t_var{
+			modelvar.name, "real",
+			tl::var_to_str(modelvar.value.real())});
+#endif
 	}
 
 	return vars;
@@ -246,7 +256,11 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 			// set model variables
 			tl2_mag::Variable modelvar;
 			modelvar.name = strVar;
+#ifdef MAGNONMOD_USE_CPLX
 			modelvar.value = tl::str_to_var<t_cplx>(strVal);
+#else
+			modelvar.value = tl::str_to_var<t_real>(strVal);
+#endif
 			m_dyn.SetVariable(std::move(modelvar));
 			m_dyn.CalcExchangeTerms();
 		}
