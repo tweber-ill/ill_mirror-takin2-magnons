@@ -64,13 +64,13 @@ std::tuple<std::vector<t_real>, std::vector<t_real>>
 	MagnonMod::disp(t_real h, t_real k, t_real l) const
 {
 	// calculate the reduced momentum transfer q = Q - G
-	const auto& G = m_dyn.GetBraggPeak();
+	/*const auto& G = m_dyn.GetBraggPeak();
 	if(G.size() == 3)
 	{
 		h -= G[0].real();
 		k -= G[1].real();
 		l -= G[2].real();
-	}
+	}*/
 
 	// calculate dispersion relation
 	std::vector<t_real> energies;
@@ -119,22 +119,6 @@ std::vector<MagnonMod::t_var> MagnonMod::GetVars() const
 {
 	std::vector<t_var> vars;
 
-	// get bragg peak
-	const auto& _G = m_dyn.GetBraggPeak();
-	std::vector<t_real> G;
-	if(_G.size() == 3)
-	{
-		G = std::vector<t_real>{{
-			_G[0].real(),
-			_G[1].real(),
-			_G[2].real()
-		}};
-	}
-	else
-	{
-		G = std::vector<t_real>{{ 1., 0., 0. }};
-	}
-
 	// get external field
 	const tl2_mag::ExternalField& field = m_dyn.GetExternalField();
 	std::vector<t_real> B;
@@ -160,8 +144,6 @@ std::vector<MagnonMod::t_var> MagnonMod::GetVars() const
 		"T", "real", tl::var_to_str(m_dyn.GetTemperature())});
 	vars.push_back(SqwBase::t_var{
 		"cutoff", "real", tl::var_to_str(m_dyn.GetBoseCutoffEnergy())});
-	vars.push_back(SqwBase::t_var{
-		"G", "vector", vec_to_str(G)});
 	vars.push_back(SqwBase::t_var{
 		"B_dir", "vector", vec_to_str(B)});
 	vars.push_back(SqwBase::t_var{
@@ -208,19 +190,6 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 			m_dyn.SetTemperature(tl::str_to_var<t_real>(strVal));
 		else if(strVar == "cutoff")
 			m_dyn.SetBoseCutoffEnergy(tl::str_to_var<t_real>(strVal));
-		else if(strVar == "G")
-		{
-			std::vector<t_real> G = str_to_vec<std::vector<t_real>>(strVal);
-			if(G.size() == 3)
-			{
-				m_dyn.SetBraggPeak(G[0], G[1], G[2]);
-				m_dyn.CalcAtomSites();
-			}
-			else
-			{
-				tl::log_err("Invalid Bragg peak.");
-			}
-		}
 		else if(strVar == "B_dir")
 		{
 			std::vector<t_real> dir = str_to_vec<std::vector<t_real>>(strVal);
