@@ -16,11 +16,7 @@
 
 //#define MAGNONMOD_USE_CPLX
 
-using t_real = typename MagnonMod::t_real;
-
-#ifdef MAGNONMOD_USE_CPLX
-	using t_cplx = tl2_mag::t_cplx;
-#endif
+using t_real = MagnonMod::t_real;
 
 
 // ----------------------------------------------------------------------------
@@ -120,7 +116,7 @@ std::vector<MagnonMod::t_var> MagnonMod::GetVars() const
 	std::vector<t_var> vars;
 
 	// get external field
-	const tl2_mag::ExternalField& field = m_dyn.GetExternalField();
+	const t_magdyn::ExternalField& field = m_dyn.GetExternalField();
 	std::vector<t_real> B;
 	if(field.dir.size() == 3)
 	{
@@ -195,9 +191,8 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 			std::vector<t_real> dir = str_to_vec<std::vector<t_real>>(strVal);
 			if(dir.size() == 3)
 			{
-				tl2_mag::ExternalField field = m_dyn.GetExternalField();
-				field.dir = tl2::create<tl2_mag::t_vec_real>(
-					{dir[0], dir[1], dir[2]});
+				t_magdyn::ExternalField field = m_dyn.GetExternalField();
+				field.dir = tl2::create<t_vec_real>({dir[0], dir[1], dir[2]});
 				m_dyn.SetExternalField(field);
 				m_dyn.CalcAtomSites();
 			}
@@ -208,14 +203,14 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 		}
 		else if(strVar == "B_mag")
 		{
-			tl2_mag::ExternalField field = m_dyn.GetExternalField();
+			t_magdyn::ExternalField field = m_dyn.GetExternalField();
 			field.mag = tl::str_to_var<decltype(m_S0)>(strVal);
 			m_dyn.SetExternalField(field);
 			m_dyn.CalcAtomSites();
 		}
 		else if(strVar == "B_align_spins")
 		{
-			tl2_mag::ExternalField field = m_dyn.GetExternalField();
+			t_magdyn::ExternalField field = m_dyn.GetExternalField();
 			field.align_spins = (tl::str_to_var<int>(strVal) != 0);
 			m_dyn.SetExternalField(field);
 			m_dyn.CalcAtomSites();
@@ -223,7 +218,7 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 		else
 		{
 			// set model variables
-			tl2_mag::Variable modelvar;
+			t_magdyn::Variable modelvar;
 			modelvar.name = strVar;
 #ifdef MAGNONMOD_USE_CPLX
 			modelvar.value = tl::str_to_var<t_cplx>(strVal);

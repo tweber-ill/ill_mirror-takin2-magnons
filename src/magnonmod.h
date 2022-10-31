@@ -8,9 +8,10 @@
 #ifndef __MAGNON_SQW_MOD_H__
 #define __MAGNON_SQW_MOD_H__
 
+#define USE_LAPACK 1
+
 #include "tools/monteconvo/sqwbase.h"
 #include "tlibs/math/linalg.h"
-
 #include "tlibs2/libs/magdyn.h"
 
 
@@ -18,12 +19,26 @@ class MagnonMod : public SqwBase
 {
 	public:
 		using SqwBase::t_var;
+
+		using t_size = std::size_t;
 		using t_real = t_real_reso;
+		using t_cplx = std::complex<t_real>;
 		using t_vec = tl::ublas::vector<t_real>;
+
+		using t_vec_real = tl2::vec<t_real, std::vector>;
+		using t_mat_real = tl2::mat<t_real, std::vector>;
+
+		using t_vec_cplx = tl2::vec<t_cplx, std::vector>;
+		using t_mat_cplx = tl2::mat<t_cplx, std::vector>;
+
+		using t_magdyn = tl2_mag::MagDyn<
+			t_mat_cplx, t_vec_cplx,
+			t_mat_real, t_vec_real,
+			t_cplx, t_real, t_size>;
 
 
 	protected:
-		tl2_mag::MagDyn m_dyn{};
+		t_magdyn m_dyn{};
 
 		// peak width
 		t_real m_sigma = t_real(0.05);
