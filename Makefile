@@ -50,7 +50,7 @@ endif
 
 
 STD = -std=c++20
-LIBDEFS = -fPIC
+LIBDEFS = -fPIC -DUSE_LAPACK=1
 INCS = -Isrc -Iext -Iext/takin $(SYSINCS)
 # -----------------------------------------------------------------------------
 

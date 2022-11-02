@@ -8,8 +8,6 @@
 #ifndef __MAGNON_SQW_MOD_H__
 #define __MAGNON_SQW_MOD_H__
 
-#define USE_LAPACK 1
-
 #include "tools/monteconvo/sqwbase.h"
 #include "tlibs/math/linalg.h"
 #include "tlibs2/libs/magdyn.h"
