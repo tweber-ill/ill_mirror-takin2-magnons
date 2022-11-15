@@ -69,10 +69,13 @@ std::tuple<std::vector<t_real>, std::vector<t_real>>
 	}*/
 
 	// calculate dispersion relation
-	std::vector<t_real> energies;
-	std::vector<t_real> weights;
 
 	auto modes = m_dyn.GetEnergies(h, k, l, false);
+
+	std::vector<t_real> energies;
+	std::vector<t_real> weights;
+	energies.reserve(modes.size());
+	weights.reserve(modes.size());
 
 	for(const auto& mode : modes)
 	{
@@ -169,6 +172,9 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 {
 	if(!vars.size()) return;
 
+	bool calc_sites = false;
+	bool calc_terms = false;
+
 	for(const SqwBase::t_var& var : vars)
 	{
 		const std::string& strVar = std::get<0>(var);
@@ -193,8 +199,9 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 			{
 				t_magdyn::ExternalField field = m_dyn.GetExternalField();
 				field.dir = tl2::create<t_vec_real>({dir[0], dir[1], dir[2]});
+
 				m_dyn.SetExternalField(field);
-				m_dyn.CalcAtomSites();
+				calc_sites = true;
 			}
 			else
 			{
@@ -205,19 +212,23 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 		{
 			t_magdyn::ExternalField field = m_dyn.GetExternalField();
 			field.mag = tl::str_to_var<decltype(m_S0)>(strVal);
+
 			m_dyn.SetExternalField(field);
-			m_dyn.CalcAtomSites();
+			calc_sites = true;
 		}
 		else if(strVar == "B_align_spins")
 		{
 			t_magdyn::ExternalField field = m_dyn.GetExternalField();
 			field.align_spins = (tl::str_to_var<int>(strVal) != 0);
+
 			m_dyn.SetExternalField(field);
-			m_dyn.CalcAtomSites();
+			calc_sites = true;
 		}
 		else
 		{
 			// set model variables
+			tl::log_info("Model variable: ", strVar, " = ",  strVal, ".");
+
 			t_magdyn::Variable modelvar;
 			modelvar.name = strVar;
 #ifdef MAGNONMOD_USE_CPLX
@@ -226,9 +237,14 @@ void MagnonMod::SetVars(const std::vector<MagnonMod::t_var>& vars)
 			modelvar.value = tl::str_to_var<t_real>(strVal);
 #endif
 			m_dyn.SetVariable(std::move(modelvar));
-			m_dyn.CalcExchangeTerms();
+			calc_terms = true;
 		}
 	}
+
+	if(calc_sites)
+		m_dyn.CalcAtomSites();
+	if(calc_terms)
+		m_dyn.CalcExchangeTerms();
 }
 
 
