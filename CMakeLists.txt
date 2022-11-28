@@ -1,7 +1,7 @@
 #
 # @author Tobias Weber <tweber@ill.fr>
-# @date 29-nov-2022
-# @license GPLv3, see 'LICENSE' file
+# @date 28-nov-2022
+# @license see 'LICENSE' file
 #
 # ----------------------------------------------------------------------------
 # mag-core (part of the Takin software suite)
