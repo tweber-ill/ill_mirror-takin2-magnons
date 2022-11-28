@@ -4,9 +4,9 @@
 # @license see 'LICENSE' file
 #
 # ----------------------------------------------------------------------------
-# mag-core (part of the Takin software suite)
-# Copyright (C) 2018-2021  Tobias WEBER (Institut Laue-Langevin (ILL),
-#                          Grenoble, France).
+# magnonmod (part of the Takin software suite)
+# Copyright (C) 2022  Tobias WEBER (Institut Laue-Langevin (ILL),
+#                     Grenoble, France).
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
