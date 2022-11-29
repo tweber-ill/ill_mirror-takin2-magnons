@@ -39,14 +39,14 @@ class MagnonMod : public SqwBase
 		t_magdyn m_dyn{};
 
 		// peak width
-		t_real m_sigma = t_real(0.05);
+		t_real m_sigma = t_real(0.025);
 
 		// S(q,E) scaling factor
 		t_real m_S0 = t_real(1.);
 
 		// incoherent amplitude and width
 		t_real m_incoh_amp = t_real(0.);
-		t_real m_incoh_sigma = t_real(0.05);
+		t_real m_incoh_sigma = t_real(0.025);
 
 
 	public:

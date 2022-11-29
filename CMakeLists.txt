@@ -1,4 +1,5 @@
 #
+# module for magnon dynamics
 # @author Tobias Weber <tweber@ill.fr>
 # @date 28-nov-2022
 # @license see 'LICENSE' file
@@ -37,6 +38,7 @@ list(APPEND CMAKE_MODULE_PATH
 	"${PROJECT_SOURCE_DIR}/ext/tlibs2/cmake"
 )
 
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_options(-g -ggdb)
 	set(CMAKE_VERBOSE_MAKEFILE TRUE)
@@ -71,7 +73,6 @@ find_package(Lapacke REQUIRED)
 add_definitions(-DUSE_LAPACK=1)
 include_directories("${Lapacke_INCLUDE_DIRS}")
 
-
 include_directories("${PROJECT_SOURCE_DIR}")
 
 include_directories(
@@ -89,13 +90,12 @@ add_library(magnonmod SHARED
 	ext/takin/tools/monteconvo/sqwbase.cpp
 )
 
-
-#if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-#	target_link_options(takin_magdyn
-#		# create an __info_plist section in the binary
-#		PRIVATE LINKER:-sectcreate,__TEXT,__info_plist,${PROJECT_SOURCE_DIR}/../../setup_mac/InfoMagDyn.plist
-#	)
-#endif()
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+	target_link_options(magnonmod
+		# create an __info_plist section in the binary
+		PRIVATE LINKER:-sectcreate,__TEXT,__info_plist,${PROJECT_SOURCE_DIR}/ext/takin2/setup_mac/InfoMagDyn.plist
+	)
+endif()
 
 target_link_libraries(magnonmod
 	${Boost_LIBRARIES}

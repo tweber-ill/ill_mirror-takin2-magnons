@@ -28,6 +28,8 @@ tmp/**
 *.pyc
 *.csv
 .DS_Store
+build
+build/**
 
 # External dependencies
 ext/tlibs
