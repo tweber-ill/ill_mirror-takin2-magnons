@@ -1,5 +1,5 @@
 /**
- * S(q,w) module for magnon dynamics
+ * S(q,w) module for magnetic dynamics
  * @author Tobias Weber <tweber@ill.fr>
  * @date jan-2022
  * @license GPLv2, see 'LICENSE' file
@@ -292,7 +292,7 @@ SqwBase* MagnonMod::shallow_copy() const
 
 std::tuple<std::string, std::string, std::string> sqw_info()
 {
-	return std::make_tuple(TAKIN_VER, "magnonmod", "Magnon Dynamics");
+	return std::make_tuple(TAKIN_VER, "magnonmod", "Magnetic Dynamics");
 }
 
 
